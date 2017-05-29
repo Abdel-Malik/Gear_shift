@@ -5,8 +5,6 @@
 ///////////////////////////////////////////////////////////////*/
 #include "GearBoxAI.h"
 
-using namespace std;
-
 int main()
 {
     GearBoxAI test = GearBoxAI();

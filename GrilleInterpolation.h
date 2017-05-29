@@ -1,4 +1,4 @@
-/*///////////////////////////////////////////////////////////////
+﻿/*///////////////////////////////////////////////////////////////
 // * Author : Abdel-Malik Bouhassoun
 // * Date : 26 Mai 2017
 // Ce header contient la classe servant à stocker et traiter
@@ -52,14 +52,14 @@ class GrilleInterpolation{
     void initialisationPointsEco(){
         for(int i = 0; i < X_AXE; i++){
             for(int j = 0; j < Y_AXE ; j++){
-                grillePoints[i][j] = Point(i,j,1+j);
+                grillePoints[i][j] = Point(i,j,((i*(i-10)/25.0)*(j*(j-10)/25.0))); // valeurs à récupérer dans les mesures prises
             }
         }
     };
     void initialisationPointsPerf(){
         for(int i = 0; i < X_AXE; i++){
             for(int j = 0; j < Y_AXE ; j++){
-                grillePoints[i][j] = Point(i,j,1+i);
+                grillePoints[i][j] = Point(i,j,1+i); // valeurs à récupérer dans les mesures prises
             }
         }
     };

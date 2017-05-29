@@ -11,6 +11,4 @@ enum ModeConduite{
     PERF
 };
 
-//signatures autres
-
 #endif

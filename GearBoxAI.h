@@ -29,8 +29,8 @@ class GearBoxAI{
 //        recuperationDonnees();
         interpolation[0] = GrilleInterpolation(ModeConduite::ECO);
         interpolation[1] = GrilleInterpolation(ModeConduite::PERF);
-        vitesse = 2;
-        chargeMoteur = 7;
+        vitesse = 3.2;
+        chargeMoteur = 2;
     };
     //méthodes
     void modeCourant(){
