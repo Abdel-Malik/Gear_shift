@@ -1,19 +1,21 @@
 /*///////////////////////////////////////////////////////////////
 // * Author : Abdel-Malik Bouhassoun
 // * Date : 26 Mai 2017
-// Ce header contient ...todo...
+// Ce header contient une implémentation d'une classe point (3D)
 ///////////////////////////////////////////////////////////////*/
 #ifndef _Point_h_
 #define _Point_h_
 
 class Point{
-    //attributs
+
+    /**attributs**/
     double vitesse;
     double chargeMoteur;
     double csq;
-    //méthodes
+
+    /**Méthodes**/
     public:
-    //Constructeurs
+    /*Constructeurs*/
     Point(){
         vitesse = 0;
         chargeMoteur = 0;
@@ -25,8 +27,9 @@ class Point{
         csq = val;
     };
 
-    //méthodes
-    //getter
+    /*méthodes*/
+
+    /*getter*/
     double get1eD(){
         return vitesse;
     }
@@ -36,7 +39,7 @@ class Point{
     double get3eD(){
         return csq;
     }
-    //setter
+    /*setter*/
 
 };
 

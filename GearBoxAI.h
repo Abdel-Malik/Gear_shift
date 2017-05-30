@@ -14,7 +14,8 @@
 #include "GrilleInterpolation.h"
 
 class GearBoxAI{
-    //attributs
+
+    /**attributs**/
     enum ModeConduite mode;
     int gears[2];
     GrilleInterpolation interpolation[2];
@@ -22,7 +23,9 @@ class GearBoxAI{
     double chargeMoteur;
     double acceleration;
     double consommation;
-    //méthodes
+
+    /**Méthodes**/
+
     public:
     //Constructeurs
     GearBoxAI(){
@@ -32,7 +35,7 @@ class GearBoxAI{
         vitesse = 3.2;
         chargeMoteur = 2;
     };
-    //méthodes
+    /*Méthodes publiques*/
     void modeCourant(){
         //récupérer le mode;
         std::cout << InterpolationAcc() << std::endl;
@@ -47,10 +50,11 @@ class GearBoxAI{
     };
     void changeGear();
     void currentGear();
-    //getter
+
+    /*getter*/
     bool isGearUp();
     bool isGearDown();
-    //setter
+    /*setter*/
 
 };
 

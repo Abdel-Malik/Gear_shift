@@ -12,11 +12,14 @@ les données relatives à l'interpolation
 #define Z_AXE (10)
 
 class GrilleInterpolation{
-    //attributs
+
+    /**attributs**/
     Point grillePoints[X_AXE][Y_AXE];
-    //méthodes
+
+    /**Méthodes**/
+
     public:
-    //Constructeurs
+    /*Constructeurs*/
     GrilleInterpolation(){
     };
     GrilleInterpolation(ModeConduite mode){
@@ -25,8 +28,14 @@ class GrilleInterpolation{
         else
             initialisationPointsPerf();
     };
-    public:
-    //méthodes
+
+    /*Méthodes publiques*/
+
+    //param :
+    //in : La vitesse du véhicule / la charge moteur appliquée
+    //out : La valeur interpolée
+    //but : Réaliser une interpolation à l'aide des données de grillesPoints
+    //Avec les paramêtres d'entrées, deux points (extrémitées opposées du rectangle) sont récupérées, un calcul d'interpolation est appellé à l'aide de ces points
     double interpolerPoint(double vit, double chM){
         int bas[]={-1,-1}, haut[]={-1,-1};
         int i =1, j=1;
@@ -48,7 +57,9 @@ class GrilleInterpolation{
     };
 
     private:
-    //méthodes
+
+    /*Méthodes privées*/
+
     void initialisationPointsEco(){
         for(int i = 0; i < X_AXE; i++){
             for(int j = 0; j < Y_AXE ; j++){
@@ -72,8 +83,8 @@ class GrilleInterpolation{
         double dy = (chM-coinIG[1])/(coinSD[1]-coinIG[1]);
         return ((a*dx)+(b*dy)+(c*dx*dy)+d);
     };
-    //getter
-    //setter
+    /*getter*/
+    /*setter*/
 
 };
 
