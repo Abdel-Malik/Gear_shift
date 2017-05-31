@@ -6,19 +6,24 @@
 #ifndef _GearAI_h_
 #define _GearAI_h_
 
-#include <math.h>
 #include <iostream>
+#include <vector>
 #include <string.h>
+#include <math.h>
 #include "E_ModeConduite.h"
 #include "Point.h"
+#include "Intermediaire.h"
 #include "GrilleInterpolation.h"
 
 class GearBoxAI{
 
     /**attributs**/
     enum ModeConduite mode;
-    int gears[2];
-    GrilleInterpolation interpolation[2];
+    std::vector<std::pair<GrilleInterpolation,GrilleInterpolation>> interpolation;
+    int gear;
+    const int GEAR_MIN = informations.getGearMin();
+    const int GEAR_MAX = informations.getGearMax();
+    Intermediaire informations = Intermediaire();
     double vitesse;
     double chargeMoteur;
     double acceleration;
@@ -29,33 +34,106 @@ class GearBoxAI{
     public:
     //Constructeurs
     GearBoxAI(){
-//        recuperationDonnees();
-        interpolation[0] = GrilleInterpolation(ModeConduite::ECO);
-        interpolation[1] = GrilleInterpolation(ModeConduite::PERF);
-        vitesse = 3.2;
-        chargeMoteur = 2;
+        recuperationDonnees();
+        initialisationGrilles();
+        acceleration = InterpolationAcc(gear);
+        consommation = InterpolationCons(gear);
     };
     /*Méthodes publiques*/
     void modeCourant(){
         //récupérer le mode;
-        std::cout << InterpolationAcc() << std::endl;
-        std::cout << InterpolationCons() << std::endl;
-    }
-    void recuperationDonnees();
-    double InterpolationAcc(){
-        return interpolation[0].interpolerPoint(vitesse,chargeMoteur);
+        std::cout << InterpolationAcc(gear) << std::endl;
+        std::cout << InterpolationCons(gear) << std::endl;
     };
-    double InterpolationCons(){
-        return interpolation[1].interpolerPoint(vitesse,chargeMoteur);
-    };
-    void changeGear();
-    void currentGear();
 
+    double InterpolationAcc(int gear){
+        return interpolation[gear].first.interpolerPoint(vitesse,chargeMoteur);
+    };
+    double InterpolationCons(int gear){
+        return interpolation[gear].second.interpolerPoint(vitesse,chargeMoteur);
+    };
+    void changeGear(int gear);
+
+    void optimiserAcceleration(){
+        int ng = boucleMeilleurVitesseAcceleration(-1);
+        if(ng == gear)
+            ng = boucleMeilleurVitesseAcceleration(1);
+        changeGear(ng);
+    };
+    void optimiserConsommation(){
+        int ng = boucleMeilleurConso(-1);
+        if(ng == gear)
+            ng = boucleMeilleurConso(1);
+        changeGear(ng);
+    };
+
+    int boucleMeilleurVitesseAcceleration(int delta){
+        double accCalculee;
+        int gearT = gear+delta;
+        int ng = gear;
+        if(delta < 0){
+            while(gearT >= GEAR_MIN){
+                accCalculee = InterpolationAcc(gearT);
+                if(acceleration < accCalculee){
+                    ng = gearT;
+                    acceleration = accCalculee;
+                }
+                gearT += delta;
+            }
+        }else{
+            while(gearT <= GEAR_MAX){
+                accCalculee = InterpolationAcc(gearT);
+                if(acceleration < accCalculee){
+                    ng = gearT;
+                    acceleration = accCalculee;
+                }
+                gearT += delta;
+            }
+        }
+        return ng;
+    };
+    int boucleMeilleurConso(int delta){
+        double consoCalculee;
+        int gearT = gear+delta;
+        int ng = gear;
+        if(delta < 0){
+            while(gearT >= GEAR_MIN){
+                consoCalculee = InterpolationCons(gearT);
+                if(consommation > consoCalculee){
+                    ng = gearT;
+                    consommation = consoCalculee;
+                }
+                gearT += delta;
+            }
+        }else{
+            while(gearT <= GEAR_MAX){
+                consoCalculee = InterpolationCons(gearT);
+                if(consommation > consoCalculee){
+                    ng = gearT;
+                    consommation = consoCalculee;
+                }
+                gearT += delta;
+            }
+        }
+        return ng;
+    };
     /*getter*/
-    bool isGearUp();
-    bool isGearDown();
+
     /*setter*/
 
+    void recuperationDonnees(){
+        gear = informations.getGear();
+        vitesse = informations.getVitesse();
+        chargeMoteur = informations.getChargeMoteur();
+    };
+    void initialisationGrilles(){
+        for(int i = 0; i < (informations.getGearMax()-informations.getGearMin()+1);i++){
+            GrilleInterpolation eco = GrilleInterpolation(ModeConduite::ECO,informations.getAxeZ(i,ModeConduite::ECO),informations.getEchAxe());
+            GrilleInterpolation perf = GrilleInterpolation(ModeConduite::PERF,informations.getAxeZ(i,ModeConduite::PERF),informations.getEchAxe());
+            std::pair<GrilleInterpolation,GrilleInterpolation> p (eco,perf);
+            interpolation.push_back(p);
+        }
+    };
 };
 
 //signatures autres

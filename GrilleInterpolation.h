@@ -3,18 +3,21 @@
 // * Date : 26 Mai 2017
 // Ce header contient la classe servant à stocker et traiter
 les données relatives à l'interpolation
+
+2*!TODO! récup données
 ///////////////////////////////////////////////////////////////*/
 #ifndef _GrilleInterpolation_h_
 #define _GrilleInterpolation_h_
-
-#define X_AXE (10)
-#define Y_AXE (10)
-#define Z_AXE (10)
+#include <windows.h>
+#define X_AXE (11)
+#define Y_AXE (11)
+#define Z_AXE (11)
 
 class GrilleInterpolation{
 
     /**attributs**/
-    Point grillePoints[X_AXE][Y_AXE];
+    std::vector<std::vector<Point> > grillePoints;
+    int echantillonnage;
 
     /**Méthodes**/
 
@@ -22,11 +25,13 @@ class GrilleInterpolation{
     /*Constructeurs*/
     GrilleInterpolation(){
     };
-    GrilleInterpolation(ModeConduite mode){
+    GrilleInterpolation(ModeConduite mode, double* axeZ, int ech){
+        echantillonnage = ech;
+        initialisationTableau2DDePoints();
         if(mode == ModeConduite::ECO)
-            initialisationPointsEco();
+            initialisationPointsEco(axeZ);
         else
-            initialisationPointsPerf();
+            initialisationPointsPerf(axeZ);
     };
 
     /*Méthodes publiques*/
@@ -37,40 +42,76 @@ class GrilleInterpolation{
     //but : Réaliser une interpolation à l'aide des données de grillesPoints
     //Avec les paramêtres d'entrées, deux points (extrémitées opposées du rectangle) sont récupérées, un calcul d'interpolation est appellé à l'aide de ces points
     double interpolerPoint(double vit, double chM){
+        bool infGauche = false;
+        bool supDroit = false;
         int bas[]={-1,-1}, haut[]={-1,-1};
         int i =1, j=1;
-        while(haut[0] == -1 && i<10){
+        while(haut[0] == -1 && i<echantillonnage){
             if(grillePoints[i][0].get1eD() > vit){
-                bas[0] = grillePoints[i-1][0].get1eD();
-                haut[0] = grillePoints[i][0].get1eD();
+                bas[0] = i-1;
+                haut[0] = i;
+                infGauche = true;
             }
             i++;
         }
-        while(haut[1] == -1 && j<10){
+        while(haut[1] == -1 && j<echantillonnage){
             if(grillePoints[0][j].get2eD() > chM){
-                bas[1] = grillePoints[0][j-1].get2eD();
-                haut[1] = grillePoints[0][j].get2eD();
+                bas[1] = j-1;
+                haut[1] = j;
+                supDroit = true;
             }
             j++;
+        }
+        if(!infGauche){
+            bas[0] = echantillonnage-1;
+            haut[0] = echantillonnage-1;
+            if(bas[1] == -1){
+                bas[1] = echantillonnage-1;
+                haut[1] = echantillonnage-1;
+            }
+        }
+        if(!supDroit){
+            haut[1] = echantillonnage-1;
+            if(haut[0] == -1){
+                haut[0] = echantillonnage-1;
+            }
         }
         return interpoler(bas,haut,vit,chM);
     };
 
     private:
 
+    void initialisationTableau2DDePoints(){
+        grillePoints = std::vector< std::vector<Point> >(echantillonnage);
+        for(int i = 0; i < echantillonnage; i++){
+            grillePoints[i] = std::vector<Point>(echantillonnage);
+        }
+    }
+
     /*Méthodes privées*/
 
-    void initialisationPointsEco(){
-        for(int i = 0; i < X_AXE; i++){
-            for(int j = 0; j < Y_AXE ; j++){
-                grillePoints[i][j] = Point(i,j,((i*(i-10)/25.0)*(j*(j-10)/25.0))); // valeurs à récupérer dans les mesures prises
+    void initialisationPointsEco(double* axeZ){
+        for(int i = 0; i < echantillonnage; i++){ //Y_AXE
+            for(int j = 0; j < echantillonnage; j++){ //X_AXE
+                grillePoints[i][j] = Point(i,j,axeZ[echantillonnage*i+j]);
             }
         }
+        //test();
     };
-    void initialisationPointsPerf(){
-        for(int i = 0; i < X_AXE; i++){
-            for(int j = 0; j < Y_AXE ; j++){
-                grillePoints[i][j] = Point(i,j,1+i); // valeurs à récupérer dans les mesures prises
+    void test(){
+        for(int i = 0; i < echantillonnage; i++){ //Y_AXE
+            for(int j = 0; j < echantillonnage; j++){ //X_AXE
+                std::cout << grillePoints[i][j].get3eD() << "i "<< i<<"j "<<j<< std::endl;
+            }
+        }
+        Sleep(100);
+    };
+    void initialisationPointsPerf(double axeZ[]){
+        double pasVitesse = (Intermediaire::VITESSE_MAX-Intermediaire::VITESSE_MIN)/echantillonnage;
+        double pasCharge = (Intermediaire::CHARGE_MAX-Intermediaire::CHARGE_MIN)/echantillonnage;
+        for(int i = 0; i < echantillonnage; i++){
+            for(int j = 0; j < echantillonnage; j++){
+                grillePoints[i][j] = Point(pasVitesse*i,pasCharge*j,axeZ[echantillonnage*i+j]);
             }
         }
     };
@@ -78,13 +119,19 @@ class GrilleInterpolation{
         double d = grillePoints[coinIG[0]][coinIG[1]].get3eD();
         double a = grillePoints[coinSD[0]][coinIG[1]].get3eD()-d;
         double b = grillePoints[coinIG[0]][coinSD[1]].get3eD()-d;
-        double c = grillePoints[coinSD[0]][coinSD[1]].get3eD()-grillePoints[coinSD[0]][coinIG[1]].get3eD()-grillePoints[coinIG[0]][coinSD[1]].get3eD()-d;
-        double dx = (vit-coinIG[0])/(coinSD[0]-coinIG[0]);
-        double dy = (chM-coinIG[1])/(coinSD[1]-coinIG[1]);
+        double c = (grillePoints[coinSD[0]][coinSD[1]].get3eD())-(grillePoints[coinSD[0]][coinIG[1]].get3eD()+grillePoints[coinIG[0]][coinSD[1]].get3eD()+d);
+        double dx = (vit-grillePoints[coinIG[0]][0].get1eD())/(grillePoints[coinSD[0]][0].get1eD()-grillePoints[coinIG[0]][0].get1eD());
+        double dy = (chM-grillePoints[0][coinIG[1]].get2eD())/(grillePoints[0][coinSD[1]].get2eD()-grillePoints[0][coinIG[1]].get2eD());
+        if(grillePoints[coinSD[0]][0].get1eD() == grillePoints[coinIG[0]][0].get1eD())
+            dx = 0;
+        if(grillePoints[0][coinSD[1]].get2eD() == grillePoints[0][coinIG[1]].get2eD())  dy = 0;
         return ((a*dx)+(b*dy)+(c*dx*dy)+d);
     };
     /*getter*/
     /*setter*/
+    void setEchantillonnage(int e){
+        echantillonnage = e;
+    };
 
 };
 
