@@ -1,5 +1,15 @@
-gear_shift.cbp
-gear_shift.depend
-gear_shift.layout
-bin/
-obj/
+# Compilator data
+*.cbp
+*.depend
+*.layout
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Executables
+*.exe
+*.out
+*.app
