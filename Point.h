@@ -27,8 +27,6 @@ class Point{
         csq = val;
     };
 
-    /*méthodes*/
-
     /*getter*/
     double get1eD(){
         return vitesse;

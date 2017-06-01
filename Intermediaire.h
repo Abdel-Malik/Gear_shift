@@ -3,7 +3,7 @@
 // * Date : 26 Mai 2017
 // Ce header contient une classe intermédiaire
 // Cette classe permet de déplacer le problème de la réception de données
-// des classes principales pour pouvoir terminer la création de celles-ci.
+//des classes principales pour pouvoir terminer la création de celles-ci.
 ///////////////////////////////////////////////////////////////*/
 #ifndef _Intermediaire_h_
 #define _Intermediaire_h_
@@ -36,7 +36,7 @@ class Intermediaire{
     int echAxe;
 
 
-    /**Méthodes publiques**/
+    /**Méthodes**/
 
     public:
     //Constructeurs
