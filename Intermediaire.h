@@ -1,6 +1,6 @@
-/*///////////////////////////////////////////////////////////////
+﻿/*///////////////////////////////////////////////////////////////
 // * Author : Abdel-Malik Bouhassoun
-// * Date : 26 Mai 2017
+// * Date : 31 Mai 2017
 // Ce header contient une classe intermédiaire
 // Cette classe permet de déplacer le problème de la réception de données
 //des classes principales pour pouvoir terminer la création de celles-ci.

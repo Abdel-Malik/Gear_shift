@@ -12,18 +12,21 @@
 #include <math.h>
 #include "E_ModeConduite.h"
 #include "Point.h"
-#include "Intermediaire.h"
+#include "../IntermediaireG.h"
 #include "GrilleInterpolation.h"
 
+#define M_PI (3.1415269)
 class GearBoxAI{
 
     /**attributs**/
     enum ModeConduite mode;
-    std::vector<std::pair<GrilleInterpolation,GrilleInterpolation>> interpolation;
+    std::vector<GrilleInterpolation> interpolation;
+    std::vector<double> demultiplication;
+    GrilleInterpolation BSFC;
     int gear;
-    const int GEAR_MIN = informations.getGearMin();
-    const int GEAR_MAX = informations.getGearMax();
-    Intermediaire informations = Intermediaire();
+    const int GEAR_MIN = IntermediaireG::GEAR_MIN;
+    const int GEAR_MAX = IntermediaireG::GEAR_MAX;
+    IntermediaireG informations = IntermediaireG();
     double vitesse;
     double chargeMoteur;
     double acceleration;
@@ -74,11 +77,9 @@ class GearBoxAI{
     //but : initialiser les grillesInterpolation utilisées pour optimiser le rapport courant
     //Pour chaque vitesse du véhicule, un couple de 'GrilleInterpolation' [ECO ; PERF] est créé
     void initialisationGrilles(){
-        for(int i = 0; i < (informations.getGearMax()-informations.getGearMin()+1);i++){
-            GrilleInterpolation eco = GrilleInterpolation(ModeConduite::ECO,informations.getAxeZ(i,ModeConduite::ECO),informations.getEchAxe());
+        for(int i = 0; i < (GEAR_MAX-GEAR_MIN+1);i++){
             GrilleInterpolation perf = GrilleInterpolation(ModeConduite::PERF,informations.getAxeZ(i,ModeConduite::PERF),informations.getEchAxe());
-            std::pair<GrilleInterpolation,GrilleInterpolation> p (eco,perf);
-            interpolation.push_back(p);
+            interpolation.push_back(perf);
         }
     };
 
@@ -88,7 +89,7 @@ class GearBoxAI{
     //but : Réaliser une interpolation de l'accélération pour 'gear' passé en paramètre
     //cette interpolation est réalisé avec les valeurs de vitesse ; charge moteur du véhicule
     double InterpolationAcc(int gear){
-        return interpolation[gear].first.interpolerPoint(vitesse,chargeMoteur);
+        return interpolation[gear].interpolerPoint(vitesse,chargeMoteur);
     };
 
     //param :
@@ -97,7 +98,7 @@ class GearBoxAI{
     //but : Réaliser une interpolation de la consommation pour 'gear' passé en paramètre
     //cette interpolation est réalisé avec les valeurs de vitesse ; charge moteur du véhicule
     double InterpolationCons(int gear){
-        return interpolation[gear].second.interpolerPoint(vitesse,chargeMoteur);
+        return BSFC.interpolerPoint(demultiplication[gear]*(informations.getVitesse()/3.6)/(2*M_PI*informations.getRayonRoues(0)),chargeMoteur);
     };
 
     //param :
