@@ -43,8 +43,6 @@ class GearBoxAI{
         initialisationGrilles();
         acceleration = InterpolationAcc(gear);
         consommation = InterpolationCons(gear);
-
-        std::cout << "1" << std::endl;
     };
 
     /*Méthodes publiques*/

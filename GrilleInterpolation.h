@@ -103,7 +103,7 @@ class GrilleInterpolation{
     //données organisés comme suit : [x0-y0;...;x0-yMax ;x1-y0..;x1-yMax ; xMax - yMax]
     //but : Initialisation des Points de la grillePoints en vue d'une interpolation de consommation.
     void initialisationPointsEco(double* axeZ){
-        double pasVitesse = (IntermediaireG::VITESSE_MAX-IntermediaireG::VITESSE_MIN)/echantillonnage;
+        double pasVitesse = (IntermediaireG::RPM_MAX-IntermediaireG::RPM_MIN)/echantillonnage;
         double pasCharge = (IntermediaireG::CHARGE_MAX-IntermediaireG::CHARGE_MIN)/echantillonnage;
         for(int i = 0; i < echantillonnage; i++){
             for(int j = 0; j < echantillonnage; j++){
