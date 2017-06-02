@@ -12,7 +12,7 @@
 #include <math.h>
 #include "E_ModeConduite.h"
 #include "Point.h"
-#include "../IntermediaireG.h"
+#include "../IntermediaireG/IntermediaireG.h"
 #include "GrilleInterpolation.h"
 
 #define M_PI (3.1415269)
@@ -37,10 +37,14 @@ class GearBoxAI{
     public:
     //Constructeurs
     GearBoxAI(){
+        for(int i = 0 ; i <(GEAR_MAX-GEAR_MIN+1); i++)
+            demultiplication.push_back(1);
         recuperationDonnees();
         initialisationGrilles();
         acceleration = InterpolationAcc(gear);
         consommation = InterpolationCons(gear);
+
+        std::cout << "1" << std::endl;
     };
 
     /*Méthodes publiques*/
@@ -81,6 +85,7 @@ class GearBoxAI{
             GrilleInterpolation perf = GrilleInterpolation(ModeConduite::PERF,informations.getAxeZ(i,ModeConduite::PERF),informations.getEchAxe());
             interpolation.push_back(perf);
         }
+        BSFC = GrilleInterpolation(ModeConduite::ECO,informations.getAxeZ(-1,ModeConduite::ECO),informations.getEchAxe());
     };
 
     //param :
@@ -89,7 +94,7 @@ class GearBoxAI{
     //but : Réaliser une interpolation de l'accélération pour 'gear' passé en paramètre
     //cette interpolation est réalisé avec les valeurs de vitesse ; charge moteur du véhicule
     double InterpolationAcc(int gear){
-        return interpolation[gear].interpolerPoint(vitesse,chargeMoteur);
+        return interpolation[gear-1].interpolerPoint(vitesse,chargeMoteur);
     };
 
     //param :
@@ -98,7 +103,7 @@ class GearBoxAI{
     //but : Réaliser une interpolation de la consommation pour 'gear' passé en paramètre
     //cette interpolation est réalisé avec les valeurs de vitesse ; charge moteur du véhicule
     double InterpolationCons(int gear){
-        return BSFC.interpolerPoint(demultiplication[gear]*(informations.getVitesse()/3.6)/(2*M_PI*informations.getRayonRoues(0)),chargeMoteur);
+        return BSFC.interpolerPoint(demultiplication[gear-1]*(informations.getVitesse()/3.6)/(2*M_PI*informations.getRayonRoues(0)),chargeMoteur);
     };
 
     //param :
