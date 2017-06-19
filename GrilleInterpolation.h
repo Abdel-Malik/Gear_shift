@@ -1,9 +1,10 @@
-﻿/*///////////////////////////////////////////////////////////////
-// * Author : Abdel-Malik Bouhassoun
-// * Date : 26 Mai 2017
-// Ce header contient la classe servant à stocker et traiter
-//les données relatives à l'interpolation
-///////////////////////////////////////////////////////////////*/
+﻿/**---------------------------------------------------------
+ * \author : Abdel-Malik Bouhassoun
+ * \date : 26 Mai 2017
+ * \file Ce header contient la classe servant à stocker et traiter
+ * les données relatives à l'interpolation
+ */
+
 #ifndef _GrilleInterpolation_h_
 #define _GrilleInterpolation_h_
 #include <windows.h>
@@ -13,11 +14,11 @@
 
 class GrilleInterpolation{
 
-    /**attributs**/
+    //--**attributs**--//
     std::vector<std::vector<Point> > grillePoints;
     int echantillonnage;
 
-    /**Méthodes**/
+    //-**Méthodes**-//
 
     public:
     /*Constructeurs*/
@@ -34,10 +35,12 @@ class GrilleInterpolation{
 
     /*Méthodes publiques*/
 
-    //param :
-    //in : La vitesse du véhicule / la charge moteur appliquée
-    //out : La valeur interpolée
-    //but : Réaliser une interpolation à l'aide des données de grillesPoints
+
+    /** \brief Réaliser une interpolation à l'aide des données de grillesPoints
+     * \param[in] vit La vitesse du véhicule
+     * \param[in] chM la charge moteur appliquée
+     * \param[out] double La valeur interpolée
+     */
     //Avec les paramêtres d'entrées, deux points (extrémitées opposées du rectangle) sont récupérées, un calcul d'interpolation est appellé à l'aide de ces points
     double interpolerPoint(double vit, double chM){
         bool infGauche = false;
@@ -86,9 +89,10 @@ class GrilleInterpolation{
 
     private:
 
-    /**Méthodes privées**/
+    //--**Méthodes privées**--//
 
-    //but : initialisation de la structure avec des objets Point vides.
+    /** \brief initialisation de la structure avec des objets Point vides.
+     */
     //La structure modélise un tableau à deux dimensions.
     //Pour ce faire on utilise un Vector contenant dans chacune de ses case un second Vector.
     void initialisationTableau2DDePoints(){
@@ -98,10 +102,10 @@ class GrilleInterpolation{
         }
     }
 
-    //param :
-    //in : un tableau de taille echantillonage². Ce tableau contient les valeur de consommation (g/kW)
+    /** \brief Initialisation des Points de la grillePoints en vue d'une interpolation de consommation.
+     * \param[in] axeZ un tableau de taille echantillonage². Ce tableau contient les valeur de consommation (g/kW)
+     */
     //données organisés comme suit : [x0-y0;...;x0-yMax ;x1-y0..;x1-yMax ; xMax - yMax]
-    //but : Initialisation des Points de la grillePoints en vue d'une interpolation de consommation.
     void initialisationPointsEco(double* axeZ){
         double pasVitesse = (IntermediaireG::RPM_MAX-IntermediaireG::RPM_MIN)/echantillonnage;
         double pasCharge = (IntermediaireG::CHARGE_MAX-IntermediaireG::CHARGE_MIN)/echantillonnage;
@@ -112,10 +116,11 @@ class GrilleInterpolation{
         }
     };
 
-    //param :
-    //in : un tableau de taille echantillonage². Ce tableau contient les valeur d'accéleration (m.s^-2)
-    //données organisés comme suit : [x0-y0;...;x0-yMax ;x1-y0..;x1-yMax ; xMax - yMax]
-    //but : Initialisation des Points de la grillePoints en vue d'une interpolation d'accéleration.
+
+    /** \brief Initialisation des Points de la grillePoints en vue d'une interpolation d'accéleration.
+     * \param[in] axeZ un tableau de taille echantillonage². Ce tableau contient les valeur d'accéleration (m.s^-2)
+     * données organisés comme suit : [x0-y0;...;x0-yMax ;x1-y0..;x1-yMax ; xMax - yMax]
+     */
     void initialisationPointsPerf(double axeZ[]){
         double pasVitesse = (IntermediaireG::VITESSE_MAX-IntermediaireG::VITESSE_MIN)/echantillonnage;
         double pasCharge = (IntermediaireG::CHARGE_MAX-IntermediaireG::CHARGE_MIN)/echantillonnage;
@@ -126,11 +131,14 @@ class GrilleInterpolation{
         }
     };
 
-    //param :
-    //in : (coinIG : coin inférieur Gauche ; coinSD : coin supérieur droit) permettant de connaître les 4 points utilisé pour l'interpolation bilinéaire.
-    //vit : la vitesse du véhicule ; chM : la charge moteur du véhicule
-    //out : la valeur d'interpolation de la surface en fonction de 'vit' et 'chM'
-    //but : réaliser une interpolation de la surface représentée par la grillePoints
+    /** \brief réaliser une interpolation de la surface représentée par la grillePoints
+     * \param[in] coinIG coin inférieur Gauche
+     * \param[in] coinSD coin supérieur droit
+     * ; permettant de connaître les 4 points utilisé pour l'interpolation bilinéaire.
+     * \param[in] vit la vitesse du véhicule
+     * \param[in] chM la charge moteur du véhicule
+     * \param[out] double La valeur d'interpolation de la surface en fonction de 'vit' et 'chM'
+     */
     double interpoler(int coinIG[], int coinSD[], double vit, double chM){
         double d = grillePoints[coinIG[0]][coinIG[1]].get3eD();
         double a = grillePoints[coinSD[0]][coinIG[1]].get3eD()-d;

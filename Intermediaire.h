@@ -1,10 +1,11 @@
-﻿/*///////////////////////////////////////////////////////////////
-// * Author : Abdel-Malik Bouhassoun
-// * Date : 31 Mai 2017
-// Ce header contient une classe intermédiaire
-// Cette classe permet de déplacer le problème de la réception de données
-//des classes principales pour pouvoir terminer la création de celles-ci.
-///////////////////////////////////////////////////////////////*/
+﻿/**------------------------------------------------------------
+ * \author Abdel-Malik Bouhassoun
+ * \date 31 Mai 2017
+ * \file Ce header contient une classe intermédiaire
+ * Cette classe permet de déplacer le problème de la réception de données
+ * des classes principales pour pouvoir terminer la création de celles-ci.
+ */
+
 #ifndef _Intermediaire_h_
 #define _Intermediaire_h_
 
@@ -15,7 +16,7 @@
 
 class Intermediaire{
 
-    /**attributs**/
+    //-**attributs**-//
     //Véhicule
     int currentGear;
     int nbRoues;
@@ -36,7 +37,7 @@ class Intermediaire{
     int echAxe;
 
 
-    /**Méthodes**/
+    //-**Méthodes**-//
 
     public:
     //Constructeurs
@@ -73,7 +74,7 @@ class Intermediaire{
     };
     /*setter*/
 
-    /**Méthodes privées**/
+    //-**Méthodes privées**-//
 
     private:
     void recuperationDonnees(){

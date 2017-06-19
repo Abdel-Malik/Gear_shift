@@ -1,19 +1,19 @@
-/*///////////////////////////////////////////////////////////////
-// * Author : Abdel-Malik Bouhassoun
-// * Date : 26 Mai 2017
-// Ce header contient une implémentation d'une classe point (3D)
-///////////////////////////////////////////////////////////////*/
+﻿/**-------------------------------------------------------------
+ * \author Abdel-Malik Bouhassoun
+ * \date 26 Mai 2017
+ * \file Ce header contient une implémentation d'une classe point (3D)
+ */
 #ifndef _Point_h_
 #define _Point_h_
 
 class Point{
 
-    /**attributs**/
+    //-**attributs**-//
     double vitesse;
     double chargeMoteur;
     double csq;
 
-    /**Méthodes**/
+    //-**Méthodes**-//
     public:
     /*Constructeurs*/
     Point(){
