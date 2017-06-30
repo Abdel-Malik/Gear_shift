@@ -7,6 +7,7 @@
 
 #ifndef _GrilleInterpolation_h_
 #define _GrilleInterpolation_h_
+#include "Point.h"
 #include <windows.h>
 #define X_AXE (11)
 #define Y_AXE (11)
